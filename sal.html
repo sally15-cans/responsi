@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Otakuverse</title>
+    <link rel="stylesheet" href="gg.css">
+    <style>
+        /* Tambahkan CSS jika diperlukan */
+        #anime-container li img {
+            width: 150px; /* Ukuran default gambar */
+            height: auto; /* Tinggi akan menyesuaikan agar tidak terdistorsi */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Otakuverse</h1>
+    </header>
+    <main>
+        <section id="anime-list">
+            <h2>Anime Musim Ini</h2>
+            <ul id="anime-container">
+                <!-- Daftar anime akan ditambahkan di sini oleh JavaScript -->
+            </ul>
+        </section>
+        <section id="favorites">
+            <h2>Anime Favorit</h2>
+            <ul id="favorites-container">
+                <!-- Anime favorit akan ditampilkan di sini -->
+            </ul>
+            <form method="post" action="save_favorites.php" id="favoritesForm">
+                <input type="hidden" name="favorites" id="favoritesInput">
+                <button type="submit">Simpan Favorit</button>
+            </form>
+        </section>
+    </main>
+    <script>
+        const animeList = [
+            { title: 'Naruto', genre: 'Action, Adventure', studio: 'Studio Pierrot', img: 'naruto.jpeg' },
+            { title: 'Boruto', genre: 'Action, Adventure', studio: 'Studio Pierrot', img: 'botuto.jpeg' },
+            { title: 'Attack on Titan', genre: 'Action, Drama', studio: 'Wit Studio, MAPPA', img: 'aot.jpeg' },
+            { title: 'Demon Slayer', genre: 'Action, Supernatural', studio: 'ufotable', img: 'kimet.jpeg' }
+        ];
+
+        const favorites = [];
+
+        function loadAnimeList() {
+            const animeContainer = document.getElementById('anime-container');
+            animeList.forEach(anime => {
+                const li = document.createElement('li');
+                const img = document.createElement('img');
+                img.src = anime.img;
+                img.alt = anime.title;
+                img.style.width = '150px'; // Mengatur ukuran gambar
+                li.appendChild(img);
+                li.innerHTML += `<br>${anime.title} - Genre: ${anime.genre} - Studio: ${anime.studio}`;
+                li.onclick = () => addToFavorites(anime);
+                animeContainer.appendChild(li);
+            });
+        }
+
+        function addToFavorites(anime) {
+            if (!favorites.some(fav => fav.title === anime.title)) {
+                favorites.push(anime);
+                updateFavoritesDisplay();
+            }
+        }
+
+        function removeFromFavorites(title) {
+            const index = favorites.findIndex(anime => anime.title === title);
+            if (index !== -1) {
+                favorites.splice(index, 1);
+                updateFavoritesDisplay();
+            }
+        }
+
+        function updateFavoritesDisplay() {
+            const favoritesContainer = document.getElementById('favorites-container');
+            favoritesContainer.innerHTML = '';
+            favorites.forEach(anime => {
+                const li = document.createElement('li');
+                const img = document.createElement('img');
+                img.src = anime.img;
+                img.alt = anime.title;
+                img.style.width = '150px'; // Mengatur ukuran gambar
+                li.appendChild(img);
+                li.innerHTML += `<br>${anime.title} - Genre: ${anime.genre} - Studio: ${anime.studio} <button type="button" onclick="removeFromFavorites('${anime.title}')">Batalkan</button>`;
+                favoritesContainer.appendChild(li);
+            });
+            document.getElementById('favoritesInput').value = JSON.stringify(favorites);
+        }
+
+        document.addEventListener('DOMContentLoaded', loadAnimeList);
+    </script>
+</body>
+</html>
